@@ -1,0 +1,9 @@
+nextcord
+nextcord[voice]
+PyNaCl
+colorthief
+regex
+validators
+youtube_dl
+pytube
+unidecode
