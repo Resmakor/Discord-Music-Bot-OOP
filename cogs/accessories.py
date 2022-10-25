@@ -34,6 +34,9 @@ class Accessories(commands.Cog):
         except:
             await ctx.channel.send(f"Argument '{amount}' is not a valid argument!")
             return
+        if amount > 150:
+          await ctx.channel.send(f"{amount} is too much for me! Cleaning 150 messages...", delete_after=5)
+          amount = 150
         deleted_messages = await ctx.channel.purge(limit=amount, check=lambda x: self.bot_prefix in x.content or self.bot_id == x.author.id)
         how_many = len(deleted_messages)
         await ctx.send(f"**{how_many}** messages have been deleted! ♻️", delete_after=10)
