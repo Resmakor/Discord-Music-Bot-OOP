@@ -168,6 +168,7 @@ url6 = ""
     async def skip(self, ctx):
 ```
 - These commands in order: ```pause```, ```resume```, ```skip``` the music.
+
 ![alt text](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/pause_resume_skip.png?raw=true)
 #
 ```python
@@ -214,6 +215,7 @@ url6 = ""
     async def listen(self, ctx, member : nextcord.Member):
 ```
 - Function send messages with some details about discord member who's listening to song on Spotify. Embed is not impressive, that command was fully made for fun.
+
 ![alt text](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/listen_command.PNG?raw=true)
 
 #
@@ -223,6 +225,7 @@ url6 = ""
 ```
 - Bot clears text channel by deleting its own messages and messages with bot prefix.
 - Bot searches through amount of messages behind. 
+
 ![alt text](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/clear_command.png?raw=true)
 #
 ```python
