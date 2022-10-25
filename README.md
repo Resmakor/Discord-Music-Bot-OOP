@@ -118,6 +118,7 @@ def get_ss_time(self, seconds, end):
     async def loop(self, ctx):
 ```
 - Function starts loop by changing ```if_loop``` value. Loop makes it so that songs are no longer removed from the ```list_of_songs``` and ```ctx_queue```.
+
 ![alt text](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/loop_command.png?raw=true)
 #
 ```python
