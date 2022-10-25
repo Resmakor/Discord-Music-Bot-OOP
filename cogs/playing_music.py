@@ -65,7 +65,6 @@ class Playing_music(commands.Cog):
 
     def play_queue(self):
         """Function plays music in 'queue' order. When list of songs is empty playing is finished."""
-        """Time.sleep is used to fixed bug with voice.is_playing(), it used to return true value, when there was no music playing."""
 
         print(self.list_of_songs)
 
