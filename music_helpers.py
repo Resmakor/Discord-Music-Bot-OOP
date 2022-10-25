@@ -27,4 +27,5 @@ class Music_helpers():
         return colour
 
     def get_link_shorts(url):
+        """Function returns converted YouTube short link to classic YouTube url"""
         return str("https://www.youtube.com/watch?v=" + str(url[-11:]))
