@@ -61,6 +61,7 @@ For that example final YouTube url returned by function ```link``` for user's wo
 def get_colour(id):
 ```
 - Function is responsible for finding the most suitable Discord embed colour. From the YouTube thumbnail the color palettes are separated and the middle one is always chosen.
+
 ![alt text](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/Embed.png?raw=true)
 #
 ```python
