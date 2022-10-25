@@ -111,6 +111,7 @@ async def show_time(self, ctx, timer : str):
 def get_ss_time(self, seconds, end):
 ```
 - Function gets valid time (```FFMPEG``` type) after forward command in order to change ```FFMPEG OPTIONS```. For instance: "00:01:20.00".
+
 ![alt text](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/forward_command.png?raw=true)
 #
 ```python
