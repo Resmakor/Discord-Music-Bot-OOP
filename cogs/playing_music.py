@@ -24,7 +24,6 @@ class Playing_music(commands.Cog):
         self.FFMPEG_OPTIONS = {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
         self.previous_hours = self.previous_minutes = self.previous_seconds = 0
         self.started_time = 0
-        self.duration = 0
         self.current_url = 0
         self.current_ctx = 0
 
