@@ -75,7 +75,6 @@ def get_link_shorts(id):
 Cogs folder is to organize a collection of commands and listeners. Each cog is a class that subclasses ```commands.Cog```.
 #
 ## Cog ```Playing_music```
-#
 ```python
 def add_to_queue(self, url):
 ```
