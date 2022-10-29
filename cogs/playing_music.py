@@ -13,22 +13,19 @@ from youtube_dl import YoutubeDL
 from pytube import Playlist
 from music_helpers import Music_helpers
 
+
+
 class Playing_music(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.bot_prefix = client.command_prefix
-        self.list_of_songs = []
         self.embed_queue = nextcord.Embed(title="Queue  🎵 🎵 🎵", url="https://github.com/Resmakor", color=0x44a6c0)
-        self.ctx_queue = []
         self.if_loop = False
-        self.FFMPEG_OPTIONS = {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-        self.current_url = 0
-        self.current_ctx = 0
+        self.music_queue = []
+        self.current_ctx = None
+        self.current_url = None
+        self.YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
 
-    def add_to_queue(self, url):
-        """Function adds song's url to 'list_of_songs' (list of YouTube urls)"""
-        self.list_of_songs.append(str(url))
-
+    
     def add_to_embed(self, video_title, url, duration):
         """Function adds song to global embed related to queue"""
         min_dur = timedelta(seconds=duration)
@@ -66,43 +63,40 @@ class Playing_music(commands.Cog):
     def play_queue(self):
         """Function plays music in 'queue' order. When list of songs is empty playing is finished."""
 
-        print(self.list_of_songs)
-
-        if len(self.list_of_songs) > 0:
-            YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
-            with YoutubeDL(YDL_OPTIONS) as ydl:
-                    info = ydl.extract_info(self.list_of_songs[0], download=False)
+        if len(self.music_queue) > 0:
+            self.YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
+            with YoutubeDL(self.YDL_OPTIONS) as ydl:
+                    info = ydl.extract_info(self.music_queue[0]["song_url"], download=False)
                     video_title = info.get('title', None)
                     self.duration = info['duration']
 
-            ctx = self.ctx_queue[0]
-            voice = get(self.client.voice_clients, guild=ctx.guild)
+            self.current_ctx = self.music_queue[0]["ctx"]
+            self.current_url = self.music_queue[0]["song_url"]
+            voice = get(self.client.voice_clients, guild=self.current_ctx.guild)
             self.started_time = 0
+
             URL = info['formats'][0]['url']
-            ids = re.findall(r"watch\?v=(\S{11})", self.list_of_songs[0])
+            ids = re.findall(r"watch\?v=(\S{11})", self.music_queue[0]['song_url'])
             id = ids[0]
             colour_id = Music_helpers.get_colour(id)
-            voice.play(FFmpegOpusAudio(URL, **self.FFMPEG_OPTIONS), after = lambda e: self.play_queue())
-            
-            timer = self.FFMPEG_OPTIONS['before_options']
-            timer = timer[4:15]
-            
-            self.current_url = self.list_of_songs[0]
-            self.current_ctx = ctx
-            self.started_time = time.time()
 
+            if not voice.is_playing():
+                voice.play(FFmpegOpusAudio(URL, **self.music_queue[0]["FFMPEG_OPTIONS"]), after = lambda e: self.play_queue())
+                self.started_time = time.time()
+            timer = self.music_queue[0]['FFMPEG_OPTIONS']['before_options'][4:15]
+            
             if voice.is_playing():
                 if '00:00:00.00' == timer:
-                    self.client.loop.create_task(self.show_status(ctx, video_title, self.duration, id, colour_id))
+                    self.client.loop.create_task(self.show_status(self.current_ctx, video_title, self.duration, id, colour_id))
                     self.previous_seconds = self.previous_minutes = self.previous_hours = 0
                 else: 
-                    self.client.loop.create_task(self.show_time(ctx, timer))
+                    self.client.loop.create_task(self.show_time(self.current_ctx, timer))
                 if self.if_loop == False:
-                    del self.list_of_songs[0]
-                    del self.ctx_queue[0]
+                    del self.music_queue[0]
                     self.embed_queue.remove_field(0)       
         else:
-            self.FFMPEG_OPTIONS = {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+            self.current_ctx = None
+            self.current_url = None
 
     def get_ss_time(self, seconds, end):
         """Function gets valid time after forward command (to change FFMPEG OPTIONS)"""
@@ -159,18 +153,13 @@ class Playing_music(commands.Cog):
             await ctx.channel.send(f"Argument '{seconds}' is not a valid argument!")
             return   
         voice = get(self.client.voice_clients, guild=ctx.guild)
-        try:
-            if voice.is_playing() and ctx.guild.voice_client in self.client.voice_clients:
-                end = time.time()
-                ss_time = self.get_ss_time(seconds, end)
-                if self.if_loop == False and ss_time != 0:
-                    self.list_of_songs.insert(0, self.current_url)
-                    self.ctx_queue.insert(0, self.current_ctx)
-                    self.FFMPEG_OPTIONS = {'before_options': f'-ss {ss_time} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-                voice.stop()
-            else:
-                await ctx.channel.send("Nothing is playing right now!")
-        except:
+        if voice.is_playing() and ctx.guild.voice_client in self.client.voice_clients:
+            end = time.time()
+            ss_time = self.get_ss_time(seconds, end)
+            if ss_time != 0 and self.if_loop == False:
+                self.music_queue.insert(0, {"ctx" : self.current_ctx, "song_url" : self.current_url, "FFMPEG_OPTIONS" : {'before_options': f'-ss {ss_time} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
+            voice.stop()
+        else:
             await ctx.channel.send("Nothing is playing right now!")
 
     @commands.command()
@@ -184,13 +173,9 @@ class Playing_music(commands.Cog):
             self.if_loop = False
             await ctx.send("Loop **disabled** ❌")
             voice = get(self.client.voice_clients, guild=ctx.guild)
-            try:
-                if voice.is_playing and len(self.list_of_songs) > 0:
-                        del self.list_of_songs[0]
-                        del self.ctx_queue[0]
-                        self.embed_queue.remove_field(0)
-            except:
-                return
+            if voice.is_playing() and len(self.music_queue) > 0:
+                    del self.music_queue[0]
+                    self.embed_queue.remove_field(0)
 
     @commands.command()
     async def queue(self, ctx):
@@ -201,7 +186,6 @@ class Playing_music(commands.Cog):
     async def play(self, ctx, url1 = "", url2 = "", url3 = "", url4 = "", url5 = "", url6 = ""):
         """Function deals with bot joining voice channel, getting valid YouTube url,"""
         """downloading YouTube playlist, adding song to queue, updating queue_embed, sending queue_embed and initializing song queue"""
-        YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
     
         url = url1 + url2 + url3 + url4 + url5 + url6
         print(url)
@@ -222,42 +206,46 @@ class Playing_music(commands.Cog):
             playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
             for x in playlist.video_urls:
                 try:
-                    with YoutubeDL(YDL_OPTIONS) as ydl:
+                    with YoutubeDL(self.YDL_OPTIONS) as ydl:
                         info = ydl.extract_info(x, download = False)
                         video_title = info.get('title', None)
-                        self.add_to_queue(x)
                         self.add_to_embed(video_title, x, info['duration'])
-                        self.ctx_queue.append(ctx)
+                    self.music_queue.append({"ctx": ctx, "song_url" : x, "FFMPEG_OPTIONS" : {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
                 except Exception as e:
                     await ctx.channel.send(f"{e}")
 
         elif validators.url(url) == 1 and 'shorts' in url:
             url = Music_helpers.get_link_shorts(url)
             try:
-                with YoutubeDL(YDL_OPTIONS) as ydl:
+                with YoutubeDL(self.YDL_OPTIONS) as ydl:
                         info = ydl.extract_info(url, download=False)
                         video_title = info.get('title', None)
-                        self.add_to_queue(url)
                         self.add_to_embed(video_title, url, info['duration'])
-                self.ctx_queue.append(ctx)
+                self.music_queue.append({"ctx": ctx, "song_url" : url, "FFMPEG_OPTIONS" : {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
             except Exception as e:
                 await ctx.channel.send(f"{e}")
             
         else:
             try:
-                with YoutubeDL(YDL_OPTIONS) as ydl:
+                with YoutubeDL(self.YDL_OPTIONS) as ydl:
                         info = ydl.extract_info(url, download=False)
                         video_title = info.get('title', None)
-                        self.add_to_queue(url)
                         self.add_to_embed(video_title, url, info['duration'])
-                self.ctx_queue.append(ctx)
+                self.music_queue.append({"ctx": ctx, "song_url" : url, "FFMPEG_OPTIONS" : {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
             except Exception as e:
                 await ctx.channel.send(f"{e}")
 
         voice = get(self.client.voice_clients, guild=ctx.guild)
-        if (len(self.list_of_songs) > 1 or (voice.is_playing() or voice.is_paused())):
+        if len(self.music_queue) > 1:
+            if not(voice.is_playing() or voice.is_paused()):
+                await ctx.channel.send(embed=self.embed_queue, delete_after=8)
+            else:
+                await ctx.channel.send(embed=self.embed_queue, delete_after=8)
+                self.play_queue()
+        elif voice.is_playing() or voice.is_paused():
             await ctx.channel.send(embed=self.embed_queue, delete_after=8)
-        self.play_queue()
-
+        else:
+            self.play_queue()
+        
 def setup(client):
     client.add_cog(Playing_music(client))

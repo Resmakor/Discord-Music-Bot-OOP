@@ -42,7 +42,6 @@ class Playing_music_helpers(commands.Cog):
             if voice.is_playing() or voice.is_paused() and ctx.guild.voice_client in self.client.voice_clients:
                 await ctx.channel.send('Song **skipped** ⏹️')
                 voice.stop()
-                self.FFMPEG_OPTIONS = {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
             else:
                 await ctx.channel.send('Nothing is playing right now!')
         except:
