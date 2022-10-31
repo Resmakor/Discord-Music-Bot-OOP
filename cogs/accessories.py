@@ -1,5 +1,4 @@
 import nextcord
-from nextcord import Spotify
 from nextcord.ext import commands
 from random import choice
 from os import environ
@@ -12,6 +11,7 @@ class Accessories(commands.Cog):
         self.bot_id = int(environ['bot_id'])
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def listen(self, ctx, member : nextcord.Member):
         """Function send messages with some details about discord member who's listening to song on Spotify"""
         try:
@@ -27,6 +27,7 @@ class Accessories(commands.Cog):
             await ctx.channel.send("Can't hear anything!")
 
     @commands.command()
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def clear(self, ctx, amount):
         """Bot clears text channel by deleting its own messages and messages with bot prefix"""
         try:
@@ -35,8 +36,8 @@ class Accessories(commands.Cog):
             await ctx.channel.send(f"Argument '{amount}' is not a valid argument!")
             return
         if amount > 150:
-          await ctx.channel.send(f"{amount} is too much for me! Cleaning 150 messages...", delete_after=5)
-          amount = 150
+            await ctx.channel.send(f"{amount} is too much for me! Cleaning 150 messages...", delete_after=5)
+            amount = 150
         deleted_messages = await ctx.channel.purge(limit=amount, check=lambda x: self.bot_prefix in x.content or self.bot_id == x.author.id)
         how_many = len(deleted_messages)
         await ctx.send(f"**{how_many}** messages have been deleted! ♻️", delete_after=10)
@@ -48,9 +49,13 @@ class Accessories(commands.Cog):
         await ctx.channel.send(choice(to_be_drawn))
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def cannon(self, ctx, member : nextcord.Member):
         """Bot is moving specific user through all channels. Afterwards user is back on his previous channel"""
         try:
+            if member.bot:
+                await ctx.channel.send("Sam sie wysadz ;PP")
+                return
             cannon = nextcord.utils.find(lambda r: r.name == 'cannon', ctx.message.guild.roles)
         except:
             await ctx.channel.send('Could not find role cannon on the server!')
