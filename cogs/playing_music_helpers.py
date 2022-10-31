@@ -67,6 +67,7 @@ class Playing_music_helpers(commands.Cog):
         embed.add_field(name=f"{self.bot_prefix}cannon <discordmember>", value="User is being thrown to some specific channels", inline=False)
         embed.add_field(name=f"{self.bot_prefix}clear <value>", value="Bot deletes messages with commands and its own back <value> messages", inline=False)
         embed.add_field(name=f"{self.bot_prefix}listen <discordmember>", value="Bot sends what someone is listening to on Spotify", inline=False)
+        embed.add_field(name=f"{self.bot_prefix}clearq", value="Bot clears the queue", inline=False)
         await ctx.send(embed=embed, delete_after=30)
 
 def setup(client):
