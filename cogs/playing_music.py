@@ -23,7 +23,7 @@ class Playing_music(commands.Cog):
         self.music_queue = []
         self.current_ctx = None
         self.current_url = None
-        self.YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
+        self.YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True', 'youtube_include_dash_manifest': False}
 
     
     def add_to_embed(self, video_title, url, duration):
@@ -35,7 +35,7 @@ class Playing_music(commands.Cog):
     async def show_status(self, ctx, video_title, duration, id, colour_id):
         """Function shows which song is being played and add reactions to some of them (beloved and disgusting)"""
         min_dur = timedelta(seconds=duration)
-        quick_embed = nextcord.Embed(title=f"**{video_title}** 🎵", description=f'Song duration **{min_dur}**', color=colour_id)
+        quick_embed = nextcord.Embed(title=f"{video_title} 🎵", description=f'Song duration **{min_dur}**', color=colour_id)
         quick_embed.set_thumbnail(url=f"https://img.youtube.com/vi/{id}/0.jpg")
         await ctx.channel.send(embed=quick_embed)
         await self.client.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.listening, name=video_title))
@@ -64,7 +64,6 @@ class Playing_music(commands.Cog):
         """Function plays music in 'queue' order. When list of songs is empty playing is finished."""
 
         if len(self.music_queue) > 0:
-            self.YDL_OPTIONS = {'format': 'bestaudio', 'noplaylist': 'True'}
             with YoutubeDL(self.YDL_OPTIONS) as ydl:
                     info = ydl.extract_info(self.music_queue[0]["song_url"], download=False)
                     video_title = info.get('title', None)
@@ -145,6 +144,7 @@ class Playing_music(commands.Cog):
             return 0    
 
     @commands.command()
+    @commands.cooldown(1, 4, commands.BucketType.user)
     async def forward(self, ctx, seconds):
         """Function rewinds the song by a given number of seconds"""
         try:
@@ -163,6 +163,7 @@ class Playing_music(commands.Cog):
             await ctx.channel.send("Nothing is playing right now!")
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def loop(self, ctx):
         """Function starts loop"""
         """Loop makes it so that songs are no longer removed from the 'list_of_songs' and 'ctx_queue'"""
@@ -183,6 +184,7 @@ class Playing_music(commands.Cog):
         await ctx.channel.send(embed=self.embed_queue, delete_after=30)
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def play(self, ctx, url1 = "", url2 = "", url3 = "", url4 = "", url5 = "", url6 = ""):
         """Function deals with bot joining voice channel, getting valid YouTube url,"""
         """downloading YouTube playlist, adding song to queue, updating queue_embed, sending queue_embed and initializing song queue"""
@@ -241,11 +243,20 @@ class Playing_music(commands.Cog):
                 await ctx.channel.send(embed=self.embed_queue, delete_after=8)
             else:
                 await ctx.channel.send(embed=self.embed_queue, delete_after=8)
-                self.play_queue()
+                if not voice.is_playing() and not voice.is_paused():
+                  try:
+                      self.play_queue()
+                  except Exception as e:
+                      await ctx.channel.send(f"{e}")
         elif voice.is_playing() or voice.is_paused():
             await ctx.channel.send(embed=self.embed_queue, delete_after=8)
         else:
-            self.play_queue()
-        
+            if not voice.is_playing() and not voice.is_paused():
+              try:
+                  self.play_queue()
+              except Exception as e:
+                  await ctx.channel.send(f"{e}")
+
+                
 def setup(client):
     client.add_cog(Playing_music(client))
