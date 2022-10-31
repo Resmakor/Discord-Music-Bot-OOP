@@ -185,6 +185,14 @@ class Playing_music(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 2, commands.BucketType.user)
+    async def clearq(self, ctx):
+        """Function clears queue"""
+        self.music_queue = []
+        self.embed_queue = nextcord.Embed(title="Queue  🎵 🎵 🎵", url="https://github.com/Resmakor", color=0x44a6c0)
+        await ctx.channel.send("Queue is empty!", delete_after=3)
+  
+    @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def play(self, ctx, url1 = "", url2 = "", url3 = "", url4 = "", url5 = "", url6 = ""):
         """Function deals with bot joining voice channel, getting valid YouTube url,"""
         """downloading YouTube playlist, adding song to queue, updating queue_embed, sending queue_embed and initializing song queue"""
