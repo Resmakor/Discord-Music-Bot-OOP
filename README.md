@@ -1,4 +1,4 @@
-# Discord Music Bot "Understandek" made with OOP
+# Discord Music Bot "Understandek" made with OOP (in progress)
 
 ### Video Demo: https://youtu.be/ZxDVZb1gRaw
 #
