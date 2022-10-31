@@ -5,6 +5,7 @@ class Connecting(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def join(self, ctx):
         """Bot joins voice channel"""
         try:
@@ -17,6 +18,7 @@ class Connecting(commands.Cog):
             await ctx.channel.send('You are not in the voice channel!')
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def dc(self, ctx):
         """Bot disconnects from voice channel"""
         if ctx.guild.voice_client in self.client.voice_clients:
