@@ -9,6 +9,7 @@ class Playing_music_helpers(commands.Cog):
         self.bot_prefix = client.command_prefix
 
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def pause(self, ctx):
         """Function pauses music"""
         voice = get(self.client.voice_clients, guild=ctx.guild)
@@ -22,6 +23,7 @@ class Playing_music_helpers(commands.Cog):
             await ctx.channel.send('Nothing is playing right now!')
             
     @commands.command()
+    @commands.cooldown(1, 3, commands.BucketType.user)
     async def resume(self, ctx):
         """Function resumes song"""
         voice = get(self.client.voice_clients, guild=ctx.guild)
@@ -35,6 +37,7 @@ class Playing_music_helpers(commands.Cog):
             await ctx.channel.send('Nothing is paused right now!')
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.user)
     async def skip(self, ctx):
         """Function skips song"""
         voice = get(self.client.voice_clients, guild=ctx.guild)
