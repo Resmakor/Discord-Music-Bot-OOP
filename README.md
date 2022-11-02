@@ -102,7 +102,7 @@ def play_queue(self):
 @commands.command()
     async def forward(self, ctx, seconds):
 ```
-- Command ```forward``` rewinds the song by a given number of seconds. Support functions: ```show_time```, ```get_ss_time```.
+- Command ```forward``` rewinds the song by a given number of seconds. Support methods: ```show_time```, ```get_ss_time```.
 #
 ```python
 async def show_time(self, ctx, timer : str):
