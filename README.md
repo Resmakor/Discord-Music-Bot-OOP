@@ -4,7 +4,7 @@
 #
 ## Description
 "Understandek" is Discord Bot made mainly for playing music. At first (January 2022) Understandek was made for fun and due to the fact that most of the available music bots at that time were blocked from Discord. Bot was made in Python. 
-In October 2022 Understandek was refactorised: written using OOP, cogs,  ```nextcord``` API instead of ```discord.py``` and many bugs from previous version were fixed. Video demo was recorded before refactorization, however it shows Understandek's main capabilities.
+In Oktober 2022 Understandek was refactorised: written using OOP, cogs,  ```nextcord``` API instead of ```discord.py``` and many bugs from previous version were fixed. Video demo was recorded before refactorization, however it shows Understandek's main capabilities.
 
 #
 
@@ -130,6 +130,12 @@ def get_ss_time(self, seconds, end):
 ```
 - Command ```queue``` shows status of queue via sending ```embed_queue```.
 ![queue](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/queue_embed.png?raw=true)
+#
+```python
+@commands.command()
+    async def clearq(self, ctx):
+```
+- Command clears queue
 #
 ```python
 @commands.command()
