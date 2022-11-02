@@ -96,7 +96,7 @@ async def show_status(self, ctx, video_title, duration, id, colour_id):
 ```python
 def play_queue(self):
 ```
-- Method plays music in ```music_queue["song_url"]``` order. When ```music_queue``` dictionary is empty, playing music is finished.
+- Method plays music in ```music_queue``` order. When ```music_queue``` is empty, playing music is finished.
 #
 ```python
 @commands.command()
