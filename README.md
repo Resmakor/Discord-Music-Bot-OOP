@@ -4,7 +4,7 @@
 #
 ## Description
 "Understandek" is Discord Bot made mainly for playing music. At first (January 2022) Understandek was made for fun and due to the fact that most of the available music bots at that time were blocked from Discord. Bot was made in Python. 
-In Oktober 2022 Understandek was refactorised: written using OOP, cogs,  ```nextcord``` API instead of ```discord.py``` and many bugs from previous version were fixed. Video demo was recorded before refactorization, however it shows Understandek's main capabilities.
+In October 2022 Understandek was refactorised: written using OOP, cogs,  ```nextcord``` API instead of ```discord.py``` and many bugs from previous version were fixed. Video demo was recorded before refactorization, however it shows Understandek's main capabilities.
 
 #
 
