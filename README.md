@@ -1,4 +1,4 @@
-# Discord Music Bot "Understandek" cogs version
+# Discord Music Bot "Understandek" made with cogs
 
 ### Video Demo: https://youtu.be/ZxDVZb1gRaw
 #
@@ -83,14 +83,9 @@ Cogs folder is to organize a collection of commands and listeners. Each cog is a
 ## Cog ```Playing_music```
 #
 ```python
-def add_to_queue(self, url):
-```
-- Method adds song's url to ```list_of_songs``` (list of YouTube urls)
-#
-```python
 def add_to_embed(self, video_title, url, duration):
 ```
-- Method adds song to embed (```embed_queue```) related to queue.
+- Method adds song to ```embed_queue``` related to queue.
 #
 ```python
 async def show_status(self, ctx, video_title, duration, id, colour_id):
@@ -101,7 +96,7 @@ async def show_status(self, ctx, video_title, duration, id, colour_id):
 ```python
 def play_queue(self):
 ```
-- Method plays music in ```list_of_songs``` order. When list of songs is empty, playing is finished.
+- Method plays music in ```music_queue["song_url"]``` order. When ```music_queue``` dictionary is empty, playing music is finished.
 #
 ```python
 @commands.command()
@@ -125,7 +120,7 @@ def get_ss_time(self, seconds, end):
 @commands.command()
     async def loop(self, ctx):
 ```
-- Command ```loop``` starts loop by changing ```if_loop``` value. Loop makes it so that songs are no longer removed from the ```list_of_songs``` and ```ctx_queue```.
+- Command ```loop``` starts loop by changing ```if_loop``` value. Loop makes it so that songs are no longer removed from the ```music_queue```.
 
 ![loop](https://github.com/Resmakor/Discord-Music-Bot/blob/main/snippets/loop_command.png?raw=true)
 #
@@ -215,7 +210,12 @@ url6 = ""
     async def on_message(self, message):
 ```
 - Listener makes the bot respond to keywords related to 'xD' emote.
-
+#
+```python
+@commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+```
+- Listener makes the bot disconnect voice channel after several seconds of being silent.
 #
 ## Cog ```Accesories```
 #
