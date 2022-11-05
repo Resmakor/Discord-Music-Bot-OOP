@@ -9,11 +9,15 @@ import time
 import datetime
 from datetime import timedelta
 
-from youtube_dl import YoutubeDL
+#from youtube_dl import YoutubeDL, utils
+from youtube_dl import YoutubeDL, utils
 from pytube import Playlist
 from music_helpers import Music_helpers
 
+import os
+#from urllib.error import HTTPError
 
+import asyncio
 
 class Playing_music(commands.Cog):
     def __init__(self, client):
@@ -92,7 +96,8 @@ class Playing_music(commands.Cog):
                     self.client.loop.create_task(self.show_time(self.current_ctx, timer))
                 if self.if_loop == False:
                     del self.music_queue[0]
-                    self.embed_queue.remove_field(0)       
+                    self.embed_queue.remove_field(0)
+                  
         else:
             self.current_ctx = None
             self.current_url = None
@@ -144,7 +149,7 @@ class Playing_music(commands.Cog):
             return 0    
 
     @commands.command()
-    @commands.cooldown(1, 4, commands.BucketType.user)
+    @commands.cooldown(1, 7, commands.BucketType.guild)
     async def forward(self, ctx, seconds):
         """Function rewinds the song by a given number of seconds"""
         try:
@@ -163,7 +168,7 @@ class Playing_music(commands.Cog):
             await ctx.channel.send("Nothing is playing right now!")
 
     @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.guild)
     async def loop(self, ctx):
         """Function starts loop"""
         """Loop makes it so that songs are no longer removed from the 'list_of_songs' and 'ctx_queue'"""
@@ -179,12 +184,13 @@ class Playing_music(commands.Cog):
                     self.embed_queue.remove_field(0)
 
     @commands.command()
+    @commands.cooldown(1, 2, commands.BucketType.guild)
     async def queue(self, ctx):
         """Function shows status of queue"""
         await ctx.channel.send(embed=self.embed_queue, delete_after=30)
 
     @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @commands.cooldown(1, 5, commands.BucketType.guild)
     async def clearq(self, ctx):
         """Function clears queue"""
         self.music_queue = []
@@ -192,7 +198,7 @@ class Playing_music(commands.Cog):
         await ctx.channel.send("Queue is empty!", delete_after=3)
   
     @commands.command()
-    @commands.cooldown(1, 2, commands.BucketType.user)
+    @commands.cooldown(1, 3, commands.BucketType.guild)
     async def play(self, ctx, url1 = "", url2 = "", url3 = "", url4 = "", url5 = "", url6 = ""):
         """Function deals with bot joining voice channel, getting valid YouTube url,"""
         """downloading YouTube playlist, adding song to queue, updating queue_embed, sending queue_embed and initializing song queue"""
@@ -207,7 +213,7 @@ class Playing_music(commands.Cog):
             except:
                 await ctx.channel.send("You are not in a voice channel!")
                 return
-
+  
         if validators.url(url) != 1:
             url = Music_helpers.link(url)
 
@@ -221,6 +227,7 @@ class Playing_music(commands.Cog):
                         video_title = info.get('title', None)
                         self.add_to_embed(video_title, x, info['duration'])
                     self.music_queue.append({"ctx": ctx, "song_url" : x, "FFMPEG_OPTIONS" : {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
+                    await asyncio.sleep(0.3)
                 except Exception as e:
                     await ctx.channel.send(f"{e}")
 
@@ -232,9 +239,9 @@ class Playing_music(commands.Cog):
                         video_title = info.get('title', None)
                         self.add_to_embed(video_title, url, info['duration'])
                 self.music_queue.append({"ctx": ctx, "song_url" : url, "FFMPEG_OPTIONS" : {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
+                await asyncio.sleep(0.2)
             except Exception as e:
-                await ctx.channel.send(f"{e}")
-            
+                    await ctx.channel.send(f"{e}")
         else:
             try:
                 with YoutubeDL(self.YDL_OPTIONS) as ydl:
@@ -242,17 +249,19 @@ class Playing_music(commands.Cog):
                         video_title = info.get('title', None)
                         self.add_to_embed(video_title, url, info['duration'])
                 self.music_queue.append({"ctx": ctx, "song_url" : url, "FFMPEG_OPTIONS" : {'before_options': '-ss 00:00:00.00 -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}})
+                await asyncio.sleep(0.2)
             except Exception as e:
-                await ctx.channel.send(f"{e}")
+                    await ctx.channel.send(f"{e}")
 
         voice = get(self.client.voice_clients, guild=ctx.guild)
         if len(self.music_queue) > 1:
-            if not(voice.is_playing() or voice.is_paused()):
+            if voice.is_playing() or voice.is_paused():
                 await ctx.channel.send(embed=self.embed_queue, delete_after=8)
             else:
                 await ctx.channel.send(embed=self.embed_queue, delete_after=8)
                 if not voice.is_playing() and not voice.is_paused():
                   try:
+                      await asyncio.sleep(0.2)
                       self.play_queue()
                   except Exception as e:
                       await ctx.channel.send(f"{e}")
@@ -261,6 +270,7 @@ class Playing_music(commands.Cog):
         else:
             if not voice.is_playing() and not voice.is_paused():
               try:
+                  await asyncio.sleep(0.2)
                   self.play_queue()
               except Exception as e:
                   await ctx.channel.send(f"{e}")
