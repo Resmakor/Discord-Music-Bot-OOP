@@ -3,21 +3,21 @@ from nextcord import FFmpegOpusAudio
 from nextcord.ext import commands
 from nextcord.utils import get
 
+import asyncio
 import validators
 import re
 import time
 import datetime
 from datetime import timedelta
 
-#from youtube_dl import YoutubeDL, utils
 from youtube_dl import YoutubeDL, utils
 from pytube import Playlist
 from music_helpers import Music_helpers
 
-import os
-#from urllib.error import HTTPError
 
-import asyncio
+
+
+
 
 class Playing_music(commands.Cog):
     def __init__(self, client):
