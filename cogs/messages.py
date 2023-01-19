@@ -1,5 +1,5 @@
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 import validators
 import asyncio
 
@@ -12,7 +12,7 @@ class Messages(commands.Cog):
     async def on_ready(self):
         """Function changes bot status to: listening Young Leosia - Szklanki when bot is online"""
         print("Understandek is online")
-        await self.client.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.listening, name="Young Leosia - Szklanki"))
+        await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="Young Leosia - Szklanki"))
 
     @commands.Cog.listener()
     async def on_message(self, message):
