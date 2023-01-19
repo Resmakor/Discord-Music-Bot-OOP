@@ -1,11 +1,11 @@
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 from os import listdir, environ
 
 token = str(environ['token'])
 bot_prefix = ","
 
-intents = nextcord.Intents.all()
+intents = discord.Intents.all()
 intents.members = intents.messages = intents.presences = True
 client = commands.Bot(command_prefix=bot_prefix, intents=intents)
 client.remove_command("help")
