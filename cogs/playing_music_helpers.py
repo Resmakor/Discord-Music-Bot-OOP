@@ -53,7 +53,7 @@ class Playing_music_helpers(commands.Cog):
     @commands.command()
     async def help(self, ctx):
         """Function shows available comments with description"""
-        embed = nextcord.Embed(title="Commands", url="https://github.com/Resmakor", description="powered by Resmakor", color=0xeb1e1e)
+        embed = discord.Embed(title="Commands", url="https://github.com/Resmakor", description="powered by Resmakor", color=0xeb1e1e)
         embed.add_field(name=f"{self.bot_prefix}play <song name>", value="Bot turns the music on and joins voice channel. If something is being played, song is added to queue", inline=False)
         embed.add_field(name=f"{self.bot_prefix}pause", value="Bot pauses song", inline=False)
         embed.add_field(name=f"{self.bot_prefix}resume", value ="Bot resumes song", inline=False)
