@@ -1,6 +1,6 @@
-import nextcord
-from nextcord.ext import commands
-from nextcord.utils import get 
+import discord
+from discord.ext import commands
+from discord.utils import get 
 
 
 class Playing_music_helpers(commands.Cog):
