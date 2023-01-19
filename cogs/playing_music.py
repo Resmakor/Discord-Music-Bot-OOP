@@ -194,7 +194,7 @@ class Playing_music(commands.Cog):
     async def clearq(self, ctx):
         """Function clears queue"""
         self.music_queue = []
-        self.embed_queue = nextcord.Embed(title="Queue  🎵 🎵 🎵", url="https://github.com/Resmakor", color=0x44a6c0)
+        self.embed_queue = discord.Embed(title="Queue  🎵 🎵 🎵", url="https://github.com/Resmakor", color=0x44a6c0)
         await ctx.channel.send("Queue is empty!", delete_after=3)
   
     @commands.command()
