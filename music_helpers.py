@@ -3,7 +3,7 @@ from unidecode import unidecode
 from re import findall
 from colorthief import ColorThief
 from io import BytesIO
-from nextcord import Color
+from discord import Color
 
 class Music_helpers():
 
