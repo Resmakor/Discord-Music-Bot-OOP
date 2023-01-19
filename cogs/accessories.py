@@ -56,7 +56,7 @@ class Accessories(commands.Cog):
             if member.bot:
                 await ctx.channel.send("Sam sie wysadz ;PP")
                 return
-            cannon = nextcord.utils.find(lambda r: r.name == 'cannon', ctx.message.guild.roles)
+            cannon = discord.utils.find(lambda r: r.name == 'cannon', ctx.message.guild.roles)
         except:
             await ctx.channel.send('Could not find role cannon on the server!')
             return
@@ -73,7 +73,7 @@ class Accessories(commands.Cog):
                 for channel_id in voice_channels_ids:
                     channel = self.client.get_channel(channel_id)
                     await member.move_to(channel)
-                gif_embed = nextcord.Embed(title="KABOOM!")
+                gif_embed = discord.Embed(title="KABOOM!")
                 gif_embed.set_image(url="https://c.tenor.com/u8jwYAiT_DgAAAAC/boom-bomb.gif")
                 await ctx.channel.send(f'{member.mention} has been blown up!', embed=gif_embed)
             except Exception as e:
