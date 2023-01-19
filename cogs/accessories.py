@@ -1,5 +1,5 @@
-import nextcord
-from nextcord.ext import commands
+import discord
+from discord.ext import commands
 from random import choice
 from os import environ
 
@@ -12,7 +12,7 @@ class Accessories(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 2, commands.BucketType.user)
-    async def listen(self, ctx, member : nextcord.Member):
+    async def listen(self, ctx, member : discord.Member):
         """Function send messages with some details about discord member who's listening to song on Spotify"""
         try:
             sname = member.activity.title
@@ -20,7 +20,7 @@ class Accessories(commands.Cog):
             album = member.activity.album
             palbum = member.activity.album_cover_url
             duration = str(member.activity.duration)[:-7].strip()
-            quick_embed = nextcord.Embed(title=f"{member} listens now {sname} from album {album}, there are artists such as: {sartists}", description=f'Song duration **{duration}**', colour=0xeb1e1e)
+            quick_embed = discord.Embed(title=f"{member} listens now {sname} from album {album}, there are artists such as: {sartists}", description=f'Song duration **{duration}**', colour=0xeb1e1e)
             quick_embed.set_thumbnail(url=palbum)
             await ctx.channel.send(embed=quick_embed)
         except:
@@ -50,7 +50,7 @@ class Accessories(commands.Cog):
 
     @commands.command()
     @commands.cooldown(1, 2, commands.BucketType.user)
-    async def cannon(self, ctx, member : nextcord.Member):
+    async def cannon(self, ctx, member : discord.Member):
         """Bot is moving specific user through all channels. Afterwards user is back on his previous channel"""
         try:
             if member.bot:
