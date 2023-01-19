@@ -1,7 +1,7 @@
-import nextcord
-from nextcord import FFmpegOpusAudio
-from nextcord.ext import commands
-from nextcord.utils import get
+import discord
+from discord import FFmpegOpusAudio
+from discord.ext import commands
+from discord.utils import get
 
 import asyncio
 import validators
@@ -22,7 +22,7 @@ from music_helpers import Music_helpers
 class Playing_music(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.embed_queue = nextcord.Embed(title="Queue  🎵 🎵 🎵", url="https://github.com/Resmakor", color=0x44a6c0)
+        self.embed_queue = discord.Embed(title="Queue  🎵 🎵 🎵", url="https://github.com/Resmakor", color=0x44a6c0)
         self.if_loop = False
         self.music_queue = []
         self.current_ctx = None
@@ -39,10 +39,10 @@ class Playing_music(commands.Cog):
     async def show_status(self, ctx, video_title, duration, id, colour_id):
         """Function shows which song is being played and add reactions to some of them (beloved and disgusting)"""
         min_dur = timedelta(seconds=duration)
-        quick_embed = nextcord.Embed(title=f"{video_title} 🎵", description=f'Song duration **{min_dur}**', color=colour_id)
+        quick_embed = discord.Embed(title=f"{video_title} 🎵", description=f'Song duration **{min_dur}**', color=colour_id)
         quick_embed.set_thumbnail(url=f"https://img.youtube.com/vi/{id}/0.jpg")
         await ctx.channel.send(embed=quick_embed)
-        await self.client.change_presence(activity=nextcord.Activity(type=nextcord.ActivityType.listening, name=video_title))
+        await self.client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=video_title))
         
         title_to_upper = video_title.upper()
         beloved = ['LEOSIA', 'SENTINO', 'POWW']
