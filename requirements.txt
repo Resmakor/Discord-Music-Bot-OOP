@@ -1,5 +1,5 @@
-nextcord
-nextcord[voice]
+discord
+discord[voice]
 PyNaCl
 colorthief
 regex
